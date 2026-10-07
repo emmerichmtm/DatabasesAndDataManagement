@@ -1,5 +1,12 @@
 # Change log
 
+## 2026-10-07 — SQL injection cartoon
+
+- Add the supplied car-and-speed-camera cartoon at the end of Chapter 5,
+  following its DDL/DML closing joke. Use the existing orange Joke box style
+  and preserve the editable TikZ artwork and `DROP TABLE Fines;` number plate.
+- Rebuild the PDF and self-contained Overleaf ZIP.
+
 ## 2026-10-07 — ISE-AI companion reader
 
 Based on repository commit `dab7a0d02ec6d7fa2a3ff41f3d9cfb7d2b8d009a`.

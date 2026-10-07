@@ -2439,6 +2439,129 @@ LIMIT 1;
 Kind reminder: be nice to your future self -- use transactions, and always leave the database consistent.
 \end{jokebox}
 
+% SQL injection cartoon supplied in sql_injection_jokebox.tex.
+% Editable TikZ artwork; the surrounding box uses the standard book style.
+\begingroup
+\definecolor{sqljokeink}{HTML}{282828}
+\begin{jokebox}
+\centering
+\begin{adjustbox}{max width=\linewidth,center}
+\begin{tikzpicture}[
+  x=1cm,y=1cm,
+  draw=sqljokeink,text=sqljokeink,
+  line cap=round,line join=round,
+  every node/.style={inner sep=0pt},
+  outline/.style={draw=sqljokeink,line width=1.05pt},
+  detail/.style={draw=sqljokeink!48,line width=0.6pt}
+]
+\path[use as bounding box] (0,0) rectangle (14.8,6.1);
+
+% Road and a few motion strokes.
+\draw[detail] (0.35,1.0) -- (14.45,1.0);
+\foreach \x in {1.55,5.40,9.10,12.85}
+  \draw[sqljokeink!45,line width=0.9pt] (\x,0.76) -- ++(0.82,0);
+\draw[detail] (1.96,3.19) -- (1.60,3.34);
+\draw[detail] (1.85,2.74) -- (1.30,2.78);
+\draw[detail] (1.91,2.26) -- (1.46,2.10);
+\draw[detail] (8.73,2.91) -- (9.25,3.06);
+\draw[detail] (8.73,2.49) -- (9.12,2.40);
+
+% Front-facing car.
+\begin{scope}[shift={(0.6,-1.0)}]
+  % Tyres, behind the body.
+  \fill[sqljokeink,rounded corners=1.5mm]
+    (2.0,2.04) rectangle (2.7,2.75);
+  \fill[sqljokeink,rounded corners=1.5mm]
+    (6.9,2.04) rectangle (7.6,2.75);
+
+  \path[outline,fill=white]
+    (2.08,2.22)
+    .. controls (1.78,2.22) and (1.72,2.34) .. (1.72,2.57)
+    -- (1.72,3.72)
+    .. controls (1.72,4.0) and (1.91,4.17) .. (2.2,4.23)
+    -- (2.78,5.31)
+    .. controls (2.91,5.54) and (3.09,5.59) .. (3.38,5.59)
+    -- (6.18,5.59)
+    .. controls (6.49,5.59) and (6.63,5.49) .. (6.76,5.24)
+    -- (7.31,4.23)
+    .. controls (7.64,4.16) and (7.76,3.98) .. (7.76,3.73)
+    -- (7.76,2.57)
+    .. controls (7.76,2.33) and (7.67,2.22) .. (7.38,2.22)
+    -- cycle;
+
+  % Windscreen and passenger headrest.
+  \path[outline,fill=softorange,rounded corners=0.7mm]
+    (2.58,4.27) -- (3.04,5.13)
+    .. controls (3.09,5.23) and (3.11,5.23) .. (3.22,5.23)
+    -- (6.3,5.23)
+    .. controls (6.4,5.23) and (6.43,5.2) .. (6.48,5.11)
+    -- (6.93,4.27) -- cycle;
+  \draw[sqljokeink!40,line width=0.6pt,rounded corners=1mm]
+    (3.26,4.28) -- (3.26,4.63) -- (3.95,4.63) -- (3.95,4.28);
+
+  % Stickman driver, with sunglasses, behind the dashboard.
+  \begin{scope}
+    \clip (4.83,4.285) rectangle (6.2,5.19);
+    \draw[outline] (5.6,4.87) circle (0.225);
+    \draw[outline] (5.6,4.645) -- (5.6,4.24);
+    \draw[outline] (5.6,4.47) -- (5.27,4.36);
+    \draw[outline] (5.6,4.47) -- (5.94,4.35);
+    \draw[outline] (5.1,4.21)
+      arc[start angle=155,end angle=25,x radius=0.55,y radius=0.24];
+    \fill[sqljokeink,rounded corners=0.3mm]
+      (5.40,4.89) rectangle (5.57,4.97);
+    \fill[sqljokeink,rounded corners=0.3mm]
+      (5.63,4.89) rectangle (5.80,4.97);
+    \draw[sqljokeink,line width=0.65pt] (5.56,4.93) -- (5.65,4.93);
+  \end{scope}
+
+  % Mirrors, bonnet, grille, bumper, and lights.
+  \draw[outline,fill=white,rounded corners=0.7mm]
+    (1.65,4.1) rectangle (2.07,4.36);
+  \draw[outline,fill=white,rounded corners=0.7mm]
+    (7.4,4.1) rectangle (7.82,4.36);
+  \draw[detail] (2.17,3.9) -- (7.3,3.9);
+  \draw[detail] (3.28,3.58) -- (6.18,3.58);
+  \draw[detail] (3.55,3.45) -- (5.91,3.45);
+  \draw[detail] (1.98,2.46) -- (7.5,2.46);
+  \foreach \x in {2.16,6.68}{
+    \draw[outline,fill=softorange,rounded corners=0.8mm]
+      (\x,3.37) rectangle ++(0.63,0.36);
+    \draw[JYUorange,line width=1.3pt]
+      (\x+0.04,3.23) -- ++(0.27,0);
+  }
+
+  % Licence plate in \texttt, with two tiny screw heads.
+  \draw[outline,fill=white,rounded corners=0.9mm]
+    (2.795,2.59) rectangle (6.695,3.21);
+  \foreach \x in {2.905,6.585}
+    \fill[sqljokeink!65] (\x,2.90) circle (0.019);
+  \node[font=\fontsize{11}{13}\selectfont] at (4.745,2.90)
+    {\texttt{DROP TABLE Fines;}};
+\end{scope}
+
+% Speed camera and its pole.
+\draw[sqljokeink,line width=2.7pt] (11.3,1.0) -- (11.3,4.18);
+\draw[outline,fill=white,rounded corners=1.3mm]
+  (10.68,4.02) rectangle (11.92,5.16);
+\fill[sqljokeink] (11.3,4.80) circle (0.225);
+\fill[white] (11.24,4.88) circle (0.055);
+\draw[outline,fill=softorange,rounded corners=0.45mm]
+  (10.98,4.20) rectangle (11.62,4.40);
+
+% Camera flash: three strokes and just one sound effect.
+\draw[JYUorange,line width=1.35pt] (10.40,4.83) -- (10.12,4.98);
+\draw[JYUorange,line width=1.35pt] (10.34,4.59) -- (9.47,4.36);
+\draw[JYUorange,line width=1.35pt] (10.40,4.38) -- (9.94,3.96);
+\node[text=JYUorange,rotate=15,
+      font=\itshape\fontsize{14}{16}\selectfont]
+  at (9.29,5.04) {CLICK};
+
+\end{tikzpicture}
+\end{adjustbox}
+\end{jokebox}
+\endgroup
+
 \chapter{Relational Algebra}
 \label{ch:ra}
 \begin{guidancebox}
