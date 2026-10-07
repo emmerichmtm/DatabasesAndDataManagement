@@ -1,7 +1,10 @@
-\documentclass[12pt,a4paper]{book}
+\documentclass[11pt,a4paper,openany]{book}
 \usepackage[normalem]{ulem}
 \usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[utf8]{inputenc}
+\fi
 \usepackage[a4paper,margin=2.7cm]{geometry}
 \usepackage{lmodern}
 \usepackage{microtype}
@@ -21,10 +24,9 @@
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage{adjustbox}
-\usepackage{tikz}
-\usetikzlibrary{positioning,calc,fit,arrows.meta,matrix,decorations.markings}
-\usepackage{url}
+\usepackage{xurl}
 \usepackage{float}
+\usepackage{caption}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric,shapes.misc,fit,calc,backgrounds,decorations.markings,matrix,trees}
 
@@ -53,6 +55,22 @@
 \fancyhead[LO]{\nouppercase{\rightmark}}
 \fancyhead[RE]{\nouppercase{\leftmark}}
 \setlength{\headheight}{28pt}
+\fancyhead[LO]{\small\nouppercase{\rightmark}}
+\fancyhead[RE]{\small\nouppercase{\leftmark}}
+\emergencystretch=1.5em
+\raggedbottom
+% Keep chapter reading lists within their chapter, with unique link labels.
+\makeatletter
+\renewenvironment{thebibliography}[1]
+ {\subsection*{References}%
+  \list{\@biblabel{\@arabic\c@enumiv}}%
+   {\settowidth\labelwidth{\@biblabel{#1}}%
+    \leftmargin\labelwidth\advance\leftmargin\labelsep
+    \usecounter{enumiv}\let\p@enumiv\@empty
+    \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+  \sloppy\clubpenalty4000\widowpenalty4000}
+ {\endlist}
+\makeatother
 \widowpenalty=10000
 \clubpenalty=10000
 \displaywidowpenalty=10000
@@ -81,7 +99,7 @@
   extendedchars=true,
   literate={ä}{{\"a}}1 {ö}{{\"o}}1 {å}{{\aa}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1 {Å}{{\AA}}1
 }
-\lstnewenvironment{codesql}{\lstset{style=sqlstyle}}{}
+\lstnewenvironment{codesql}{\endgraf\addvspace{0.5\baselineskip}\noindent\minipage{\linewidth}\lstset{style=sqlstyle}}{\endminipage\endgraf\addvspace{0.3\baselineskip}}
 
 \newtcolorbox{guidancebox}{
   breakable,
@@ -173,7 +191,7 @@
   nodebig/.style={draw,rounded corners,fill=JYUblue!6,align=center,inner sep=6pt},
   arr/.style={-{Latex},thick},
   rel/table/.style={matrix of nodes,
-    nodes={draw,text width=30mm,minimum height=5.4mm,align=left,font=\tiny,inner xsep=2pt,inner ysep=1.2pt},
+    nodes={draw,text width=43mm,minimum height=5.4mm,align=left,font=\scriptsize,inner xsep=2pt,inner ysep=1.2pt},
     row 1/.style={nodes={fill=black, text=white, font=\bfseries\small, align=center}},
     row 2/.style={nodes={fill=black!10}}, row 3/.style={nodes={fill=black!2}},
     row 4/.style={nodes={fill=black!10}}, row 5/.style={nodes={fill=black!2}},
@@ -186,6 +204,7 @@
 \newcommand{\stick}[3]{\begin{scope}[shift={(#1,#2)}]\draw[line width=0.9pt] (0,0.25) circle (0.18);\node[font=\scriptsize] at (0,0.25) {#3};\draw[line width=0.9pt] (0,0.07) -- (0,-0.55);\draw[line width=0.9pt] (-0.32,-0.15) -- (0.32,-0.15);\draw[line width=0.9pt] (0,-0.55) -- (-0.28,-0.95);\draw[line width=0.9pt] (0,-0.55) -- (0.28,-0.95);\end{scope}}
 \newcommand{\stickman}[4]{\begin{scope}[shift={(#1,#2)}, scale=#3]\draw[line width=0.9pt] (0,0.25) circle (0.18);\node[font=\scriptsize] at (0,0.25) {#4};\draw[line width=0.9pt] (0,0.07) -- (0,-0.55);\draw[line width=0.9pt] (-0.32,-0.15) -- (0.32,-0.15);\draw[line width=0.9pt] (0,-0.55) -- (-0.28,-0.95);\draw[line width=0.9pt] (0,-0.55) -- (0.28,-0.95);\end{scope}}
 
+\let\cleardoublepage\clearpage
 \begin{document}
 
 \frontmatter
@@ -193,32 +212,42 @@
 \centering
 {\Huge\bfseries Introduction to Databases and Data Management\par}
 \vspace{1.5cm}
-{\Large Full text manuscript based on the lecture slides\par}
+{\Large Companion reader for ISE-AI\par}
 \vspace{2cm}
 {\Large Michael T. M. Emmerich\par}
 \vspace{0.5cm}
 {\large Faculty of Information Technology\par}
 {\large University of Jyväskylä\par}
 \vfill
-{\large Draft based on Lecture Slides\par}
+{\large Living book -- working edition\par}
 \vspace{0.3cm}
-{\large \today\par}
+{\large 7 October 2026\par}
 \end{titlepage}
 
 \chapter*{Preface}
-This book grows out of a lecture series on databases and data management. The goal is simple: give a clear path from the basic idea of a database to practical SQL, solid schema design, and modern large scale data systems. The text follows the lecture order. Each chapter corresponds to one lecture set of slides. This makes it easy to connect reading, slides, lecture notes, and later online publication.
+This living book introduces databases and data management, from conceptual modeling and practical SQL to relational theory and distributed data systems. It accompanies the ISE-AI bachelor programme in Software Engineering and AI at the University of Jyväskylä, Faculty of Information Technology. It is intended for students new to databases and as a reference during software projects.
 
-The style of this manuscript is intentionally direct. We use simple English, many examples, and careful transitions between topics. A database course can feel split into separate worlds: conceptual modeling, relational theory, SQL, design theory, and distributed systems. In practice these worlds belong together. Good database work moves back and forth between them. You model a domain, transform that model into tables, query those tables, protect correctness with constraints and transactions, and later scale or reorganize the data when the system grows.
+The book is supporting reading, with a broader scope and its own chapter order. The \href{https://tim.jyu.fi/view/kurssit/it/iseai/26-27/databases/home}{ISE-AI course home in TIM} defines the teaching sequence, assigned reading, exercises, assessment, and practical arrangements. A chapter's presence here does not make it required course content. In particular, the final chapter provides additional reading on Hadoop and MapReduce.
 
-This book is also meant to be useful online. In a WordPress version, each chapter can have links to its PDF slides, LaTeX slide source, and chapter PDF. The present LaTeX file is self contained so that it can be compiled on Overleaf without depending on external images. The same source can later be tracked in Git, versioned openly, and published in multiple formats.
+PostgreSQL is the database system used for SQL examples and practical work. Examples use ordinary PostgreSQL features; the implementation notes refer to the PostgreSQL 18 documentation. Relational algebra uses mathematical set semantics, while SQL normally retains duplicate rows. This distinction will matter throughout the book.
 
-The intended reader is a student who is new to databases, but the manuscript also aims to be a helpful reference for project work. We therefore explain terminology carefully, keep the main thread visible, and add small jokes in a gentle format. Databases are serious enough without sounding gloomy all the time.
+The nine chapters grew from the lecture slide sources maintained in the same repository. The reader now develops independently as a continuous text. The style uses explanations, worked examples, diagrams, review questions, and occasional jokes to connect database theory with practice.
+
+\section*{How to use this edition}
+Read actively: sketch the models, predict query results, and run the SQL in a practice database. Chapters 4 and 5 share a customer--invoice example. The repository includes a runnable setup and checks in \texttt{examples/}; illustrative alternatives and syntax templates are identified in the text. Examples that change data should be run in that practice environment.
+
+The authoritative editable source is maintained on \href{https://github.com/emmerichmtm/DatabasesAndDataManagement}{GitHub}. This PDF is a dated snapshot, not a frozen textbook. Corrections and suggestions can be submitted as issues or pull requests. Cite the edition date and, when available, the Git commit or release tag so that others can locate the version you used.
+
+\section*{Publication information}
+Author: Michael T. M. Emmerich. Faculty of Information Technology, University of Jyväskylä. Working edition: 7 October 2026. This revision builds on repository commit \texttt{dab7a0d}.
+
+Copyright \textcopyright\ Michael Emmerich. Shared under the \href{https://creativecommons.org/licenses/by/4.0/}{Creative Commons Attribution 4.0 International license (CC BY 4.0)}. Credit the author and identify changes when adapting the material.
 
 \tableofcontents
 
 \mainmatter
 
-\chapter{Introduction: Databases and Data Management}
+\chapter[Introduction]{Introduction: Databases and Data Management}
 \begin{guidancebox}
 This chapter introduces the course, the core vocabulary, and the reason databases matter. We begin with the big picture before moving to precise definitions. Read this chapter first if you want to understand what a database is, what a DBMS does, and why data management is much more than storing rows in a table.
 \end{guidancebox}
@@ -334,8 +363,10 @@ The same application may have all three levels. A university domain may be model
 \small This is the path followed by the course: from requirements to conceptual modeling, then to the relational schema and finally to implementation details.
 \end{center}
 
-\section{Why SQLite is useful in teaching}
-SQLite is a practical teaching tool because it is lightweight, easy to install, and widely used. It supports real SQL features while avoiding heavy setup. It is not the only DBMS, but it gives students a direct way to experiment. At the same time, one must remember that commercial and enterprise systems often add richer transaction, security, and administration features.
+\section{PostgreSQL as the learning environment}
+PostgreSQL gives us one consistent environment for table definitions, queries, constraints, views, indexes, roles, and transactions. It runs as a database server; tools such as \texttt{psql} or pgAdmin connect to that server. A client application is therefore distinct from the DBMS itself.
+
+Use the connection and installation instructions supplied in TIM. Create a practice database and run the repository's example setup there. Other SQL systems use many of the same ideas, but syntax, types, and transaction behavior can differ. When a result is surprising, consult the PostgreSQL documentation for the feature and version in use.
 
 \section{Records, metadata, and data management}
 A \emph{record} is a structured unit of stored information. \emph{Metadata} is data about data, for example schema definitions, column types, or access permission information. \emph{Data management} is the broader discipline that includes modeling, storage, querying, quality control, governance, integration, and lifecycle issues.
@@ -350,7 +381,7 @@ Data management matters because data does not stay still. It is created, changed
 \item Why does database design depend on context? Illustrate with two different applications.
 \item What role does metadata play in data management?
 \item List four important tasks of a DBMS and explain why each matters.
-\item Why is SQLite useful in teaching, and what are its limits compared with enterprise systems?
+\item What is the difference between the PostgreSQL server and a client such as \texttt{psql}?
 \end{enumerate}
 
 \section{Further reading}
@@ -371,7 +402,7 @@ R. Ramakrishnan and J. Gehrke.
 \section{Wrap-up}
 This chapter introduced the purpose of database systems and the vocabulary used in the rest of the book. The next chapter moves one step earlier in the design process. Before we create tables, we first model the real world that the database should represent.
 
-\chapter{Conceptual Modeling with ER Diagrams}
+\chapter[Conceptual Modeling]{Conceptual Modeling with ER Diagrams}
 \label{ch:er}
 \begin{guidancebox}
 This chapter is about modeling the world before we decide on tables. It explains entities, attributes, relationships, cardinality constraints, weak entities, and extended ER features such as specialization and aggregation. Read it as the bridge between informal requirements and formal design.
@@ -423,7 +454,7 @@ The ER model is the classical tool for this stage. It gives a vocabulary for tal
 
 \section{Entity sets and attributes}
 
-Roughly speaking, in the ER diagram, entities refer to objects of the real world. In an entity set they are of the same type and they share the same attributes, unless inheritance is considered. Relationship sets contain relationships between entities, whereas the relationships in a relationship set connect the same entities.
+Roughly speaking, in the ER diagram, entities refer to objects of the real world. In an entity set they are of the same type and they share the same attributes, unless inheritance is considered. Relationship sets contain relationships between entities, and the relationships in one relationship set connect entities of the same participating types and roles. The actual entity instances may differ.
 
 \begin{definition}{Entity and entity set}{entity-set}
 An \emph{entity} is a distinguishable object in the domain of discourse. An \emph{entity set} is a collection of similar entities, such as all students or all courses. Entities of the same entity set have the same attributes (see next definition). \index{entity set}
@@ -461,7 +492,7 @@ The figure also illustrates a practical point: an ER diagram should use names fr
 A \emph{key attribute} is an attribute whose values uniquely identify entities within an entity set.\index{key attribute} In the ER diagram it is underlined. Sometimes, multiple attributes in combination form a key. Then they are all underlined in the ER diagram. The combination is called a composite key.
 \end{definition}
 
-Names often do not work as keys because they are not guaranteed to be unique. A student number is usually a better choice. In ER diagrams, a key attribute is underlined. Every entity set has exactly one key or composite key in an ER diagram. The key needs to be carefully chosen. For instance, \texttt{Name} alone might not be a good choice because there might be two persons with the same name in the database, whereas the combination of \texttt{Name} and \texttt{BirthDate} as a composite key might work better.
+Names often do not work as keys because they are not guaranteed to be unique. A student number is usually a better choice. In ER diagrams, a key attribute is underlined. A strong entity type may have several candidate keys; the diagram underlines the chosen identifier. A weak entity instead needs its owner's key together with a partial key. Choose identifiers from explicit domain rules: even \texttt{Name} together with \texttt{BirthDate} is not guaranteed to distinguish every person.
 
 A practical warning is that safe key management can become difficult in large-scale databases. A theoretically unique attribute is not always a practically good key. Good keys should be stable, easy to manage, and hard to confuse. This is why designers often prefer identifiers such as \texttt{StudentId} rather than names alone. The problem is not merely technical. A poor key choice creates errors in identity, merging, deduplication, and updates.
 
@@ -527,10 +558,10 @@ Two practical details are important here. First, relationship sets are often nam
 \label{fig:er-relationship-attribute}
 \end{figure}
 
-\Cref{fig:er-relationship-attribute} is important because it prevents a common modeling mistake. If \texttt{CompletionDate} were attached to \texttt{STUDENT}, it would suggest one completion date per student. If it were attached to \texttt{COURSE}, it would suggest one completion date per course. Neither expresses the intended meaning. The attribute belongs to the relationship instance.
+\Cref{fig:er-relationship-attribute} is important because it prevents a common modeling mistake. If \texttt{Completion\allowbreak Date} were attached to \texttt{STUDENT}, it would suggest one completion date per student. If it were attached to \texttt{COURSE}, it would suggest one completion date per course. Neither expresses the intended meaning. The attribute belongs to the relationship instance.
 
 \section{Degree of a relationship}
-The \emph{degree} of a relationship is the number of participating entity sets. Unary relationships connect an entity set to itself. Binary relationships connect two entity sets. Ternary relationships connect three. The degree matters because it affects both meaning and later translation into relations.
+The \emph{degree} (arity) of a relationship is the number of participating entity roles. A recursive binary relationship such as supervision has two roles from the same entity type. Such a relationship is also called unary in conventions that count distinct participating types. Binary and ternary relationships have two and three roles, respectively; state which convention is in use. The degree matters because it affects both meaning and later translation into relations.
 
 \begin{figure}[tbp]
 \centering
@@ -623,7 +654,7 @@ Cardinality expresses \emph{how many} entities can or must participate in a rela
 \end{minipage}
 \end{figure}
 
-\Cref{fig:er-cardinality-owns,fig:er-cardinality-team} illustrate why minimum and maximum both matter. In the first case, a person may own no car at all, but a car must have an owner. In the second case, the maximum is not merely “many.” It is exactly \(11\). This reminds us that cardinalities can capture real business or domain rules, not just generic one-to-many patterns.
+\Cref{fig:er-cardinality-owns,fig:er-cardinality-team} illustrate why minimum and maximum both matter. In the first case, a person may own no car at all, but a car must have an owner. In the second case, the maximum is not merely ``many.'' It is exactly \(11\). This reminds us that cardinalities can capture real business or domain rules, not just generic one-to-many patterns.
 
 \section{Different cardinality notations}
 In practice, several notations are used for cardinality constraints. Some use labels such as \texttt{1} and \texttt{N}. Others use min--max pairs such as \texttt{0..1}, \texttt{1..*}, or more generally \texttt{N..M}. The notation differs, but the modeling idea is the same: specify the minimum and maximum number of relationship instances in which an entity may or must participate.
@@ -1046,7 +1077,7 @@ These rules explain why a relation is not just any grid of cells. If a table use
 \section{Why badly structured relations cause trouble}
 A bad relation may mix several meanings into one table, repeat the same facts many times, or store multiple values in one field. Such designs make updates error prone. One goal of database design is to keep relations disciplined and easy to maintain.
 
-For instance, a badly designed table might rely on the first row being “the best supplier” and the second row being “the second best supplier.” That would make row order part of the meaning, which is not relational. The proper relational fix would be to add an explicit attribute such as \texttt{Rank}. Similarly, if a table stores several phone numbers in one field separated by commas, then one attribute cell is no longer atomic in the intended sense. Later chapters on normalization will show why such choices create anomalies.
+For instance, a badly designed table might rely on the first row being ``the best supplier'' and the second row being ``the second best supplier.'' That would make row order part of the meaning, which is not relational. The proper relational fix would be to add an explicit attribute such as \texttt{Rank}. Similarly, if a table stores several phone numbers in one field separated by commas, then one attribute cell is no longer atomic in the intended sense. Later chapters on normalization will show why such choices create anomalies.
 
 \section{Integrity constraints}
 \begin{definition}{Integrity constraint}{integrity-constraint}
@@ -1206,7 +1237,7 @@ with \(\texttt{CHILD.EmpId} \rightarrow \texttt{EMPLOYEE.EmpId}\).
 This is a good example of how conceptual meaning survives translation. The weak entity does not become independent during mapping. Its dependence is preserved in the composite primary key and the foreign key.
 
 \subsection{One to one relationships}
-A one to one relationship can often be represented by placing a foreign key on one side, usually the side with total participation or the side that leads to a cleaner design. If the relationship has its own descriptive attributes or if future evolution is likely, a separate relation can also be justified.
+A one to one relationship can often be represented by placing a \texttt{UNIQUE} foreign key on one side, usually the side with total participation or the side that leads to a cleaner design. Without uniqueness, the mapping permits many rows to refer to the same partner. Add \texttt{NOT NULL} when participation on the referencing side is total. Requiring every row on the referenced side to participate needs an additional constraint or other enforcement mechanism. If the relationship has its own descriptive attributes or if future evolution is likely, a separate relation can also be justified.
 
 The reason is simple. A one-to-one relationship does not automatically need its own relation if one of the existing relations can store the reference cleanly without introducing repetition or ambiguity. But when the relationship itself has attributes, or when optional participation and later changes matter, a separate relation may be the clearer choice.
 
@@ -1329,7 +1360,7 @@ This gives a useful design rule: store what is fundamental, derive what is safel
 \Cref{fig:rel-multivalued-rule} shows why multivalued attributes usually lead to separate relations. The key of the owner entity is repeated, and the repeated values become tuples of their own. This keeps the resulting design relational and avoids packing lists into one cell.
 
 \subsection{Specialization and generalization}
-There is no single mandatory translation for inheritance structures. Common strategies include one relation for the supertype and one for each subtype, one relation for each subtype carrying all inherited attributes, one relation for the whole hierarchy with type information, or related alternatives. The best choice depends on constraints, redundancy, and expected queries.
+There is no single mandatory translation for inheritance structures. Common strategies include one relation for the supertype and one for each subtype, one relation for each subtype carrying all inherited attributes, one relation for the whole hierarchy with type information, or related alternatives. The best choice depends on constraints, redundancy, and expected queries. A subtype-only mapping that omits the supertype table requires total coverage; otherwise supertype entities belonging to no subtype would be lost. With overlapping subtypes, shared inherited values also need consistent maintenance.
 
 A practical rule of thumb is this. If subtype specific attributes are many and the subtype distinction matters semantically, separate subtype tables are often clearer. If the hierarchy is shallow and queries almost always need all data together, one table with type information may be simpler. As in the ER chapter, the conceptual choice and the physical design choice are related but not identical.
 
@@ -1383,9 +1414,11 @@ A practical rule of thumb is this. If subtype specific attributes are many and t
 
 For the structure in \Cref{fig:rel-eer-transform}, two common mappings are:
 \[
-\texttt{PERSON}(\underline{\texttt{PersonId}}, \texttt{Name}),\quad
-\texttt{STAFF}(\underline{\texttt{PersonId}}, \texttt{Room}),\quad
-\texttt{STUDENT}(\underline{\texttt{PersonId}}, \texttt{Major}),
+\begin{aligned}
+&\texttt{PERSON}(\underline{\texttt{PersonId}}, \texttt{Name}),\\
+&\texttt{STAFF}(\underline{\texttt{PersonId}}, \texttt{Room}),\\
+&\texttt{STUDENT}(\underline{\texttt{PersonId}}, \texttt{Major}).
+\end{aligned}
 \]
 with foreign keys from \texttt{STAFF} and \texttt{STUDENT} to \texttt{PERSON},
 or a single-table design such as
@@ -1407,7 +1440,7 @@ Questions worth asking include:
 \item Is the resulting structure easy to understand and maintain?
 \end{itemize}
 
-One robust fallback is to transform a relationship into its own relation. This always works for many situations, although it may later need normalization. Likewise, the “one supertype relation plus one relation per subtype” strategy is widely applicable for EER structures, even if it is not always the most compact.
+One robust fallback is to transform a relationship into its own relation. This always works for many situations, although it may later need normalization. Likewise, the ``one supertype relation plus one relation per subtype'' strategy is widely applicable for EER structures, even if it is not always the most compact.
 
 \section{Key design principle}
 Use keys to enforce identity cleanly and avoid redundancy. This principle sounds small, but it has large consequences. Once identity is badly handled, updates, joins, and constraints all become harder.
@@ -1495,39 +1528,39 @@ This example is small enough to understand and rich enough to illustrate joins. 
 \begin{figure}[tbp]
 \centering
 \begin{adjustbox}{max width=\linewidth,max totalheight=0.34\textheight,center}
-\begin{tikzpicture}[scale=0.58, transform shape]
+\begin{tikzpicture}[scale=0.90, transform shape]
 \matrix (cust) [rel/table] {
   CUSTOMER\\
-  \trowpk{customer\_id}{CHAR(4)}\\
-  \trow{customer\_name}{VARCHAR(15)}\\
-  \trow{city}{VARCHAR(10)}\\
-  \trow{customer\_type}{CHAR(1)}\\
-  \trow{district}{CHAR(1)}\\
+  \trowpk{customer\_id}{INT}\\
+  \trow{customer\_name}{TEXT}\\
+  \trow{city}{TEXT}\\
+  \trow{customer\_type}{TEXT}\\
+  \trow{district}{TEXT}\\
 };
 \matrix (inv) [rel/table, right=28mm of cust.north east, anchor=north west] {
   INVOICE\\
-  \trowpk{invoice\_id}{CHAR(4)}\\
+  \trowpk{invoice\_id}{INT}\\
   \trow{year}{INT}\\
-  \trow{invoice\_total}{INT}\\
-  \trow{status}{VARCHAR(2)}\\
-  \trow{customer\_id}{CHAR(4)}\\
+  \trow{invoice\_total}{NUMERIC}\\
+  \trow{status}{TEXT}\\
+  \trow{customer\_id}{INT}\\
 };
 \matrix (prod) [rel/table, below=12mm of cust.south west, anchor=north west] {
   PRODUCT\\
-  \trowpk{product\_id}{CHAR(4)}\\
-  \trow{product\_name}{VARCHAR(15)}\\
-  \trow{model}{VARCHAR(10)}\\
-  \trow{unit\_price}{INT}\\
-  \trow{color}{VARCHAR(10)}\\
+  \trowpk{product\_id}{INT}\\
+  \trow{product\_name}{TEXT}\\
+  \trow{model}{TEXT}\\
+  \trow{unit\_price}{NUMERIC}\\
+  \trow{color}{TEXT}\\
 };
 \matrix (line) [rel/table, below=12mm of inv.south west, anchor=north west] {
   INVOICE\_LINE\\
-  \trowpk{invoice\_id}{CHAR(4)}\\
-  \trowpk{product\_id}{CHAR(4)}\\
+  \trowpk{invoice\_id}{INT}\\
+  \trowpk{product\_id}{INT}\\
   \trow{quantity}{INT}\\
 };
 \draw[rel/fk] (inv-6-1.west) -- ++(-9mm,0) |- (cust-2-1.east);
-\draw[rel/fk] (line-2-1.north) -- ++(0,0.6mm) -| ($ (inv-2-1.south) + (0mm,-38mm) $);
+\draw[rel/fk] (line-2-1.east) -- ++(8mm,0) |- (inv-2-1.east);
 \draw[rel/fk] (line-3-1.west) -- ++(-9mm,0) |- (prod-2-1.east);
 \end{tikzpicture}
 \end{adjustbox}
@@ -1641,7 +1674,7 @@ FROM INVOICE
 WHERE invoice_total BETWEEN 100 AND 500;
 \end{codesql}
 
-This is roughly equivalent to saying that \texttt{invoice\_total >= 100} and \texttt{invoice\_total <= 500}. The main benefit is readability.
+For this non-null numeric range, this is equivalent to saying that \texttt{invoice\_total >= 100} and \texttt{invoice\_total <= 500}. The main benefit is readability.
 
 \section{Pattern matching and membership}
 SQL offers pattern matching with \texttt{LIKE} and list membership with \texttt{IN}.
@@ -1663,12 +1696,12 @@ In the first example, \texttt{\%} stands for any sequence of characters, so the 
 Another useful pattern is the underscore character \texttt{\_}, which stands for one single character.
 
 \begin{codesql}
-SELECT customer_id
+SELECT customer_name
 FROM CUSTOMER
-WHERE customer_id LIKE 'C___';
+WHERE customer_name LIKE 'A___';
 \end{codesql}
 
-This query looks for four-character identifiers beginning with \texttt{C}.
+This query looks for four-character customer names beginning with \texttt{A}. The pattern is applied to text, not to an integer identifier.
 
 \section{NULL semantics}
 Because \texttt{NULL} means missing or unknown information, comparisons require care. To test whether a value is null, use \texttt{IS NULL} or \texttt{IS NOT NULL}.
@@ -1851,7 +1884,7 @@ A. Silberschatz, H. F. Korth, and S. Sudarshan.
 We have now seen how SQL asks questions about stored data. The most important ideas are selecting columns, filtering rows, combining tables with joins, grouping rows for aggregation, and interpreting results carefully in the presence of duplicates and \texttt{NULL} values. The next chapter continues with database programming tasks such as table creation, constraints, updates, access control, and transactions.
 
 
-\chapter{Database Programming in SQL: DDL, DML, Access Control, and Transactions}
+\chapter[Database Programming in SQL]{Database Programming in SQL: DDL, DML, Access Control, and Transactions}
 \label{ch:sqlprog}
 \begin{guidancebox}
 This chapter moves from reading data to managing and changing it. It covers table creation, constraints, schema evolution, views, indexes, inserts, updates, deletes, privileges, and transactions. Read it as the chapter that turns SQL from a query language into a full database workbench.
@@ -1921,37 +1954,48 @@ The \texttt{PRIMARY KEY} clause makes \texttt{invoice\_id} the main identifier o
 Taken together, these constraints move important assumptions out of application code and into the database itself.
 
 \section{Composite keys and referential actions}
-Some tables naturally require more than one attribute for identification. This often happens in relationship tables.
+Some tables naturally require more than one attribute for identification. This often happens in relationship tables. First create the referenced product table:
+
+\begin{codesql}
+CREATE TABLE PRODUCT (
+  product_id   INTEGER PRIMARY KEY,
+  product_name TEXT NOT NULL,
+  model        TEXT,
+  color        TEXT,
+  unit_price   NUMERIC(10,2) CHECK (unit_price >= 0)
+);
+\end{codesql}
 
 \begin{codesql}
 CREATE TABLE INVOICE_LINE (
   invoice_id  INTEGER,
   product_id  INTEGER,
-  quantity    INTEGER CHECK (quantity > 0),
+  quantity    INTEGER NOT NULL CHECK (quantity > 0),
   PRIMARY KEY (invoice_id, product_id),
   FOREIGN KEY (invoice_id) REFERENCES INVOICE(invoice_id) ON DELETE CASCADE,
-  FOREIGN KEY (product_id) REFERENCES PRODUCT(product_id) ON DELETE SET NULL
+  FOREIGN KEY (product_id) REFERENCES PRODUCT(product_id) ON DELETE RESTRICT
 );
 \end{codesql}
 
-Here the pair \texttt{(invoice\_id, product\_id)} forms a composite primary key. That makes sense if each product should appear at most once per invoice line list.
+Here the pair \texttt{(invoice\_id, product\_id)} forms a composite primary key. That makes sense if each product should appear at most once per invoice line list. Primary-key columns cannot be null, so deleting a referenced product is restricted. A \texttt{SET NULL} action would conflict with this composite primary key.
 
 The example also introduces referential actions:
 \begin{itemize}
 \item \texttt{RESTRICT} denies a delete or update in the parent when dependent rows exist,
 \item \texttt{ON DELETE SET NULL} replaces the foreign-key value in the child by \texttt{NULL},
 \item \texttt{ON DELETE CASCADE} propagates the delete to the child rows,
-\item \texttt{ON DELETE SET DEFAULT} assigns the default value if one exists.
+\item \texttt{ON DELETE SET DEFAULT} assigns the column default (or null if no default is defined). The resulting values must still satisfy the foreign key and other constraints.
 \end{itemize}
 
 These options matter because foreign keys are not only about checking references at insertion time. They also govern what happens when referenced rows later change or disappear. The best choice depends on the semantics of the application. Invoice lines often disappear when the invoice disappears, which makes cascade behavior understandable. In other situations, automatic cascading may be too dangerous.
 
 \section{Column constraints beyond keys}
-Useful column constraints include \texttt{NOT NULL}, \texttt{UNIQUE}, \texttt{CHECK}, and \texttt{DEFAULT}. A good rule of thumb is to encode stable business rules in constraints and leave volatile policy details to the application layer.
+Useful column constraints include \texttt{NOT NULL}, \texttt{UNIQUE}, and \texttt{CHECK}; \texttt{DEFAULT} supplies an initial value rather than restricting the allowed values. A good rule of thumb is to encode stable business rules in constraints and leave volatile policy details to the application layer.
 
 \begin{codesql}
-CREATE TABLE CUSTOMER (
-  customer_id   CHAR(4)      PRIMARY KEY,
+-- A separate example, not a replacement for CUSTOMER.
+CREATE TABLE CUSTOMER_CONTACT_EXAMPLE (
+  customer_id   INTEGER      PRIMARY KEY,
   customer_name VARCHAR(15)  NOT NULL,
   email         VARCHAR(50)  UNIQUE,
   customer_type CHAR(1)      DEFAULT 'A',
@@ -1959,9 +2003,9 @@ CREATE TABLE CUSTOMER (
 );
 \end{codesql}
 
-This design prevents several classes of mistakes. A customer without a name is rejected. Duplicate email addresses are forbidden if email is supposed to identify or at least distinguish customers. The customer type gets a default classification. The district must lie in a permitted set.
+This design prevents several classes of mistakes. A customer without a name is rejected. Duplicate email addresses are forbidden if email is supposed to identify or at least distinguish customers. The customer type gets a default classification. A non-null district must lie in a permitted set. In PostgreSQL, \texttt{CHECK} accepts an unknown result, so this condition still allows null. Add \texttt{NOT NULL} to forbid it. A normal \texttt{UNIQUE} constraint allows multiple nulls but rejects duplicate non-null values. A default is used when a column is omitted or \texttt{DEFAULT} is requested; explicitly inserting null does not invoke it.
 
-A useful design principle is to store only data states that already make sense. The more clearly this is enforced in the schema, the less fragile the surrounding software becomes.
+See also the PostgreSQL documentation on \href{https://www.postgresql.org/docs/18/ddl-constraints.html}{constraints}. A useful design principle is to store only data states that already make sense. The more clearly this is enforced in the schema, the less fragile the surrounding software becomes.
 
 \section{Schema evolution with ALTER TABLE}
 Databases evolve. Requirements change. Columns are added, renamed, or removed. Constraints are tightened. The exact syntax differs between DBMS products, but the idea is common.
@@ -1974,12 +2018,12 @@ Schema evolution should be done carefully because production data already exists
 
 A more elaborate example is:
 \begin{codesql}
-CREATE TABLE INVOICE_LINE (
+CREATE TABLE INVOICE_LINE_DRAFT (
   invoice_id INTEGER,
   product_id INTEGER
 );
 
-ALTER TABLE INVOICE_LINE
+ALTER TABLE INVOICE_LINE_DRAFT
   ADD COLUMN quantity INTEGER;
 \end{codesql}
 
@@ -2005,7 +2049,7 @@ A public view can expose only those columns that some users should see.
 Views can also express derived data, not just hidden subsets of columns. For example:
 
 \begin{codesql}
-CREATE VIEW v_city_sales AS
+CREATE VIEW v_customer_sales AS
 SELECT customer_id, SUM(invoice_total) AS total_sales
 FROM INVOICE
 GROUP BY customer_id;
@@ -2013,7 +2057,7 @@ GROUP BY customer_id;
 
 Such a view packages a useful computation behind a stable name. This is convenient because many users may need the same derived information, and it keeps the logic in one place rather than duplicating it across applications.
 
-Another valuable use of views is privacy-preserving aggregation. A view that shows averages by city, department, or year can reveal useful statistics while hiding individual-level records.
+Views can also limit exposure by presenting aggregate statistics. Aggregation alone does not guarantee privacy: small groups or combinations of queries may still reveal individual information.
 
 \section{Indexes}
 \begin{definition}{Index}{index-def}
@@ -2045,7 +2089,7 @@ WHERE year BETWEEN 2020 AND 2025;
 
 This kind of query benefits from an index that preserves ordering information. By contrast, an equality lookup such as finding one customer by identifier may be handled efficiently by several different indexing strategies.
 
-A useful design question is not “Should I index everything?” but rather “Which queries matter enough to justify index maintenance cost?” Too many indexes can slow inserts, updates, and deletes significantly.
+A useful design question is not ``Should I index everything?'' but rather ``Which queries matter enough to justify index maintenance cost?'' Too many indexes can slow inserts, updates, and deletes significantly.
 
 \section{From DDL to DML}
 After the schema has been defined, we start manipulating its contents. Data Manipulation Language changes relation instances.
@@ -2129,6 +2173,8 @@ Typical privileges include:
 \end{itemize}
 
 \section{GRANT and REVOKE}
+The roles in these examples must already exist. An administrator with the required privileges can create them using \texttt{CREATE ROLE analyst\_role} and \texttt{CREATE ROLE billing\_clerk}. Access also requires permission to connect to the database and \texttt{USAGE} on the containing schema; table privileges alone are insufficient. Run grants as the object owner or another authorized grantor.
+
 \begin{codesql}
 GRANT SELECT ON CUSTOMER TO analyst_role;
 REVOKE UPDATE ON CUSTOMER FROM analyst_role;
@@ -2136,7 +2182,7 @@ REVOKE UPDATE ON CUSTOMER FROM analyst_role;
 
 Roles are useful because rights can be grouped by responsibility rather than assigned one by one to each user.
 
-The general pattern is:
+The following is a syntax template, not executable SQL; brackets indicate optional or repeated elements:
 \begin{codesql}
 GRANT privilege[, privilege]*
 ON object
@@ -2182,26 +2228,39 @@ UPDATE ACCOUNT SET balance = balance + 100 WHERE account_id = 2;
 COMMIT;
 \end{codesql}
 
-If something goes wrong in the middle, the transaction should be rolled back.
+This introductory transfer assumes both account rows exist and sufficient funds are available. An update affecting zero rows is not an SQL error. Applications must check the affected-row counts and roll back if either account is missing or a business rule fails. The next section adds the balance guard.
 
 A transaction groups several steps into one coherent action. That matters because many real-world operations are meaningful only as a whole. A bank transfer is the classic example. Deducting money from one account without crediting it to the other is not a valid finished state. The database must therefore treat the transfer as one unit.
 
 Many systems also provide an autocommit mode, where each individual statement becomes its own transaction unless an explicit \texttt{BEGIN} starts a larger one. This is convenient, but it can hide the need for explicit transaction boundaries in more complex operations.
 
 \section{A guarded update example}
-Consider a business rule stating that an account balance must never go below zero. Then a withdrawal or transfer must include a check before the transaction is allowed to complete.
+An account table can enforce a nonnegative balance directly:
+\begin{codesql}
+CREATE TABLE ACCOUNT (
+  account_id INTEGER PRIMARY KEY,
+  balance NUMERIC(12,2) NOT NULL CHECK (balance >= 0)
+);
+\end{codesql}
+For a withdrawal of 100, put the funds check in the update itself:
+\begin{codesql}
+BEGIN;
+UPDATE ACCOUNT
+SET balance = balance - 100
+WHERE account_id = 1 AND balance >= 100
+RETURNING account_id, balance;
+-- The application must receive exactly one returned row.
+-- Otherwise ROLLBACK and stop this transfer.
+UPDATE ACCOUNT
+SET balance = balance + 100
+WHERE account_id = 2
+RETURNING account_id, balance;
+-- Commit only if this update also returned exactly one row.
+COMMIT;
+\end{codesql}
+The comments describe application control flow; SQL comments do not perform these checks. The application sends the credit only after a successful debit, and commits only after a successful credit. Otherwise it sends \texttt{ROLLBACK}. The example tests in the repository exercise successful transfers, insufficient funds, and a missing destination.
 
-Conceptually, the workflow is:
-\begin{enumerate}
-\item begin the transaction,
-\item read the current balance,
-\item perform the update,
-\item check the new balance,
-\item commit if the rule is still satisfied,
-\item otherwise roll back.
-\end{enumerate}
-
-This example shows that transactions and business rules work together. Atomicity alone is not enough. The application must also decide whether the final state is acceptable.
+The conditional update avoids a separate, unprotected read of the balance. At PostgreSQL's default Read Committed level, a conflicting row update waits and rechecks its condition against the updated row. Deadlocks or serialization failures may still require a retry of the whole transaction. Applications with more complex rules may need explicit locking or stronger isolation.
 
 \section{ACID properties}
 \begin{definition}{ACID}{acid}
@@ -2214,7 +2273,7 @@ These four ideas deserve a moment of reflection.
 \begin{itemize}
 \item \textbf{Atomicity} protects against half-finished work.
 \item \textbf{Consistency} means that valid constraints and rules remain valid after the transaction.
-\item \textbf{Isolation} addresses concurrency by making interleaved execution behave as if transactions had been run in some acceptable serial order.
+\item \textbf{Isolation} controls what concurrent transactions may observe. Serializable isolation guarantees an effect equivalent to a serial order of committed transactions; weaker levels allow additional anomalies.
 \item \textbf{Durability} means that once a commit succeeds, the result is meant to survive crashes, power loss, or restart.
 \end{itemize}
 
@@ -2233,35 +2292,31 @@ Classical anomalies include:
 
 These anomalies explain why concurrency control is a central part of database systems rather than an optional extra.
 
-\section{Isolation levels}
-A common summary of the standard isolation levels is:
-
+\section{Isolation levels in PostgreSQL}
+The table describes PostgreSQL behavior. ``Yes'' means the anomaly is possible, not inevitable.
 \begin{center}
-\begin{tabular}{@{}lccc@{}}
+\small
+\begin{tabular}{@{}lcccc@{}}
 \toprule
-\textbf{Isolation level} & \textbf{Dirty reads} & \textbf{Non-repeatable reads} & \textbf{Phantoms}\\
+Level & Dirty & Non-repeatable & Phantom & Serialization\\
+ & read & read & read & anomaly\\
 \midrule
-\texttt{SERIALIZABLE} & no & no & no\\
-\texttt{REPEATABLE READ} & no & no & yes\\
-\texttt{READ COMMITTED} & no & yes & yes\\
-\texttt{READ UNCOMMITTED} & yes & yes & yes\\
+Read Uncommitted & no & yes & yes & yes\\
+Read Committed & no & yes & yes & yes\\
+Repeatable Read & no & no & no & yes\\
+Serializable & no & no & no & no\\
 \bottomrule
 \end{tabular}
 \end{center}
+Read Committed is the default. Read Uncommitted behaves identically to it in PostgreSQL. Repeatable Read uses a stable snapshot and prevents phantom reads, but it can still allow serialization anomalies. Serializable adds protection against those anomalies. Applications using Repeatable Read or Serializable must handle serialization failures by retrying the entire transaction, including its decision logic.
 
-This table captures the standard intent, although exact behavior may differ by DBMS. The general lesson is simple: looser isolation often allows more concurrency and may improve performance, but it also permits more anomalies.
-
-A typical SQL pattern is:
 \begin{codesql}
 BEGIN;
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 -- do work
 COMMIT;
 \end{codesql}
-
-The exact syntax varies by system, but the underlying design choice is the same. One chooses an isolation level to balance correctness guarantees against concurrency and speed.
-
-
+See the PostgreSQL documentation on \href{https://www.postgresql.org/docs/18/transaction-iso.html}{transaction isolation}. Other DBMSs may implement the same isolation-level names differently.
 
 \section{Locking and serializability}
 To implement isolation, DBMS products use concurrency-control techniques such as locking, timestamp ordering, or optimistic methods. A useful high-level idea is the notion of a \emph{schedule}, which is the interleaving of actions from concurrent transactions.
@@ -2269,6 +2324,8 @@ To implement isolation, DBMS products use concurrency-control techniques such as
 A schedule is called \emph{serializable} if it is equivalent in effect to some serial execution order. This is a deep theoretical idea, but its practical meaning is very intuitive: even if transactions run concurrently, the final result should be one that could have arisen from some safe one-after-another order.
 
 \section{Two-phase locking}
+This section presents a classical concurrency-control model. PostgreSQL combines multiversion concurrency control (MVCC) with locking; ordinary snapshot reads do not take the shared row locks assumed in the examples below. See its documentation on \href{https://www.postgresql.org/docs/18/explicit-locking.html}{explicit locking} for the actual lock behavior.
+
 A classical protocol for achieving serializable behavior is two-phase locking, often abbreviated as 2PL.
 
 Its basic idea is simple:
@@ -2303,7 +2360,7 @@ A \emph{deadlock} is a cycle of waiting: each transaction is waiting for a lock 
 Neither can continue. The system must intervene.
 
 \begin{jokebox}
-Two very polite transactions meet in a very narrow corridor. One says, “After you.” The other replies, “No, after you.” Both keep holding their locks. Nothing moves. The DBMS finally sighs and says, “One of you must roll back.”
+Two very polite transactions meet in a very narrow corridor. One says, ``After you.'' The other replies, ``No, after you.'' Both keep holding their locks. Nothing moves. The DBMS finally sighs and says, ``One of you must roll back.''
 \end{jokebox}
 
 The joke is light, but the point is real. Deadlocks do not usually resolve by themselves. The DBMS must detect or prevent them and then abort one transaction, releasing its locks so that the other can proceed.
@@ -2317,7 +2374,7 @@ Typical handling strategies include:
 \item \textbf{timeouts}, where a transaction waiting too long is aborted and retried.
 \end{itemize}
 
-From an application point of view, the practical lesson is that deadlocks are not unusual failures. They are normal events in concurrent systems. Robust applications therefore treat “transaction aborted” as something that may require retry logic rather than panic.
+From an application point of view, the practical lesson is that deadlocks are not unusual failures. They are normal events in concurrent systems. Robust applications therefore treat ``transaction aborted'' as something that may require retry logic rather than panic.
 
 \begin{remark}{Practical lesson}{tx-practical}
 Transactions are not an optional luxury. They are what separate reliable data management from hopeful guessing.
@@ -2401,7 +2458,7 @@ Relational algebra is also important because its operators are closed over relat
 \section{Declarative versus operational query languages}
 SQL is mainly declarative. Relational algebra is operational in the sense that it describes query computation by composing operators. Both views are valuable. The declarative view is easy for the user. The operational view is useful for reasoning and optimization.
 
-This distinction should not be misunderstood. “Operational” does not mean that relational algebra tells us which index is used or which bytes move first on disk. It means that an algebra expression explicitly shows the logical operations from which the result is built. By contrast, a declarative SQL query focuses on the intended result and leaves the DBMS free to choose an execution strategy.
+This distinction should not be misunderstood. ``Operational'' does not mean that relational algebra tells us which index is used or which bytes move first on disk. It means that an algebra expression explicitly shows the logical operations from which the result is built. By contrast, a declarative SQL query focuses on the intended result and leaves the DBMS free to choose an execution strategy.
 
 Relational calculus offers another formal view of querying. It is declarative like SQL: one describes which tuples should belong to the result rather than building the result step by step. Classical database theory shows that relational algebra and safe relational calculus have the same expressive power. This is one reason the algebra is so central: it is both mathematically expressive and operationally useful.
 
@@ -2628,7 +2685,7 @@ sid&sname&bid\\\hline
 44&guppy&103\\\hline
 \end{array}.
 \]
-The size of the result is the product of the input sizes. Even in this tiny example, \(3\times 3=9\). In real databases the explosion can be enormous. This is why the warning “do not write a cartesian product unless you really mean it” is good advice.
+The size of the result is the product of the input sizes. Even in this tiny example, \(3\times 3=9\). In real databases the explosion can be enormous. This is why the warning ``do not write a cartesian product unless you really mean it'' is good advice.
 
 Renaming, written with \(\RArename\), is important when attribute names would otherwise clash, especially in self joins. In many derivations, a join is best understood as a filtered cartesian product:
 \[
@@ -2642,9 +2699,10 @@ The renaming operator changes the name of a relation and or its attributes witho
 
 Renaming becomes indispensable when we compare a relation with itself. For example, to compare sailors pairwise by age, we create two renamed copies:
 \[
-s_1=\RArename_{sid\rightarrow sid1,\;age\rightarrow age1}(s),
-\qquad
-s_2=\RArename_{sid\rightarrow sid2,\;age\rightarrow age2}(s).
+\begin{aligned}
+s_1&=\RArename_{sid\to sid1,\ sname\to sname1,\ rating\to rating1,\ age\to age1}(s),\\
+s_2&=\RArename_{sid\to sid2,\ sname\to sname2,\ rating\to rating2,\ age\to age2}(s).
+\end{aligned}
 \]
 Now the two copies can be joined without ambiguity.
 
@@ -2661,7 +2719,7 @@ INVOICE \join_{INVOICE.customer\_id = CUSTOMER.customer\_id} CUSTOMER
 \]
 combines invoice tuples with the matching customer tuples. The join condition tells us exactly what it means for two tuples to fit together. That explicitness is one reason relational algebra is so good for teaching and optimization.
 
-Using the running instance, an example of a theta join is the “older-than” relation:
+Using the running instance, an example of a theta join is the ``older-than'' relation:
 \[
 t=s_1\join_{age1>age2}s_2.
 \]
@@ -2710,7 +2768,7 @@ sid&bid&day&color\\\hline
 Natural join is compact and elegant, but it should be used with care. If two relations happen to share an attribute name accidentally, then a natural join may impose an unintended equality condition. In longer derivations, explicit join conditions are often safer and clearer.
 
 \section{Join examples}
-Relational algebra becomes easier once one sees several join patterns.
+Relational algebra becomes easier once one sees several join patterns. For the following self-joins, let \(s_1\) and \(s_2\) be copies of \(s\) with every attribute renamed using suffixes 1 and 2, respectively. Thus \(s_1\) has attributes \(sid1,sname1,rating1,age1\), and \(s_2\) has \(sid2,sname2,rating2,age2\).
 
 A non-equality theta join can express comparison queries. For instance, to list pairs where one sailor is older than another:
 \[
@@ -2726,13 +2784,13 @@ If we also want the reservation day, we simply project one more attribute:
 \RAproject_{sname,color,day}\bigl((s \join_{sid} r)\join_{bid} b\bigr).
 \]
 
-Self-joins are often useful for “exists” or comparison queries. For example, sailors who are not the youngest are those for whom someone younger exists:
+Self-joins are often useful for ``exists'' or comparison queries. For example, sailors who are not the youngest are those for whom someone younger exists:
 \[
-\RAproject_{sid1,sname}(s_1 \join_{age1>age2} s_2).
+\RAproject_{sid1,sname1}(s_1 \join_{age1>age2} s_2).
 \]
 Similarly, sailors who share the same age with someone else are
 \[
-\RAproject_{sid1,sname}(s_1 \join_{age1=age2\wedge sid1\neq sid2} s_2).
+\RAproject_{sid1,sname1}(s_1 \join_{age1=age2\wedge sid1\neq sid2} s_2).
 \]
 
 \section{Self join example: one stop train connection}
@@ -2794,18 +2852,18 @@ P/R=\{\,\mathbf{x}\in \RAproject_{x_1,\dots,x_m}(P)\mid
 \]
 where \(\mathbf{x}\circ \mathbf{y}\) denotes tuple concatenation.
 
-A useful sanity check is
+For nonempty \(B\), a useful sanity check is
 \[
 (A\times B)/B = A,
 \]
-because every \(x\in A\) appears together with every \(y\in B\) in \(A\times B\).
+because every \(x\in A\) appears together with every \(y\in B\) in \(A\times B\). If the divisor is empty, division returns the projection of the dividend onto the remaining attributes. In particular, an empty \(A\times B\) cannot recover an arbitrary \(A\).
 
-\section{Division as the “for all” operator}
+\section{Division as the ``for all'' operator}
 Division answers queries of the form
 \[
 \text{find }x\text{ such that for all }y\in Y,\ (x,y)\in P.
 \]
-That is why a good habit is: if a query contains the phrase “for every” or “for all required items,” then division is often the right conceptual operator.
+That is why a good habit is: if a query contains the phrase ``for every'' or ``for all required items,'' then division is often the right conceptual operator.
 
 Using the running instance, suppose we want sailors who have reserved boats of \emph{all colors} that occur in the boat relation. First form the relation of actual \((sid,color)\) pairs:
 \[
@@ -2852,9 +2910,9 @@ p(sid1,sid2)=\{(sid1,sid2)\mid age(sid1)\le age(sid2)\}.
 In algebraic form:
 \[
 p=\RAproject_{sid1,sid2}\Bigl(
-\RArename_{sid\rightarrow sid1,\ age\rightarrow age1}(s)
+\RAproject_{sid1,age1}(s_1)
 \join_{age1\le age2}
-\RArename_{sid\rightarrow sid2,\ age\rightarrow age2}(s)
+\RAproject_{sid2,age2}(s_2)
 \Bigr).
 \]
 Then divide by the set of all second identifiers:
@@ -2895,7 +2953,7 @@ Although division is very useful conceptually, it is not one of the minimal clas
 P / R \;=\; \RAproject_X(P)\; \setminus\; \RAproject_X\bigl( (\RAproject_X(P)\times R)\; \setminus\; P \bigr).
 \]
 
-This formula is worth understanding. Start with all candidate \(X\)-values. Then build all pairs that \emph{should} exist if a candidate satisfies the “for all” condition. Subtract the pairs that actually exist in \(P\). What remains are the missing required pairs. Projecting \(X\) identifies the bad candidates, and subtracting them from all candidates leaves exactly the good ones.
+This formula is worth understanding. Start with all candidate \(X\)-values. Then build all pairs that \emph{should} exist if a candidate satisfies the ``for all'' condition. Subtract the pairs that actually exist in \(P\). What remains are the missing required pairs. Projecting \(X\) identifies the bad candidates, and subtracting them from all candidates leaves exactly the good ones.
 
 This derivation also shows that division adds convenience and conceptual clarity, but not fundamentally new expressive power.
 
@@ -3013,7 +3071,7 @@ For a query involving many joins, there are often many equivalent join trees. Fo
 \]
 But they may have very different costs.
 
-The number of full binary join trees grows according to the Catalan numbers. This growth is rapid, which is why optimizers cannot simply enumerate all possible plans in large queries without guidance. They use algebraic equivalences, heuristics, and cost estimates based on statistics and indexes.
+For a fixed left-to-right order of the input relations, the number of binary parenthesizations is a Catalan number. Allowing permutations of the relations makes the search space larger still. This growth is rapid, which is why optimizers cannot simply enumerate all possible plans in large queries without guidance. They use algebraic equivalences, heuristics, and cost estimates based on statistics and indexes.
 
 This is one of the main practical reasons relational algebra matters. It is not only a teaching language. It is also the language in which query plans become mathematically manipulable.
 
@@ -3295,9 +3353,9 @@ For example, if \(R(A,B,C,D)\) and \(F=\{A\to B,\ A\to C,\ A\to D\}\), then
 \[
 A^+=ABCD,
 \]
-so \(A\) is a superkey. Since no proper subset of \(A\) exists, it is also a candidate key.
+so \(A\) is a superkey. Its only proper subset is the empty set, whose closure under these dependencies is empty. Thus \(A\) is also a candidate key.
 
-With larger sets one must also check minimality. If \(AB^+=ABCD\), then \(AB\) is a superkey. But if already \(A^+=ABCD\), then \(AB\) is not a candidate key because \(B\) is unnecessary.
+With larger sets one must also check minimality. If \((AB)^+=ABCD\), then \(AB\) is a superkey. But if already \(A^+=ABCD\), then \(AB\) is not a candidate key because \(B\) is unnecessary.
 
 \section{Lossless join decomposition}
 \begin{definition}{Decomposition}{decomposition}
@@ -3428,9 +3486,9 @@ BCNF decomposition repeatedly splits a relation on dependencies that violate BCN
 
 A common binary rule is this: if \(U\to V\) holds and violates BCNF, then decompose \(R\) into
 \[
-UV \qquad\text{and}\qquad R - V.
+U\cup V \qquad\text{and}\qquad R\setminus(V\setminus U).
 \]
-This decomposition is lossless. The procedure is then repeated recursively until every resulting relation is in BCNF.
+This decomposition is lossless because the shared attributes contain \(U\), which determines the first relation. When \(U\) and \(V\) are disjoint, the second schema simplifies to \(R\setminus V\). Repeat the procedure using the dependencies projected onto each resulting schema until every relation is in BCNF.
 
 A useful example starts from a relation with attributes \(CSJDPQV\) and functional dependencies \(SD \to P\) and \(J \to S\). If we decompose first on \(SD \to P\), we obtain the lossless path shown in \cref{fig:bcnf-tree}. The key point is that the common attributes in each split are sufficient to reconstruct the original information by join.
 
@@ -3698,7 +3756,7 @@ A few of these abbreviations are especially central here:
 \item \textbf{OLAP} stands for Online Analytical Processing and refers to read-heavy analysis over large collections of historical data.
 \item \textbf{ETL} stands for Extract, Transform, Load.
 \item \textbf{DW} stands for Data Warehouse.
-\item \textbf{NoSQL} is often read as “Not only SQL,” emphasizing that the modern ecosystem includes several non-relational paradigms alongside relational systems.
+\item \textbf{NoSQL} is often read as ``Not only SQL,'' emphasizing that the modern ecosystem includes several non-relational paradigms alongside relational systems.
 \end{itemize}
 
 \section{What is a data warehouse?}
@@ -3974,19 +4032,12 @@ Sharding needs a routing mechanism. An application or coordinator must know whic
 
 \Cref{fig:dw-sharding-routing} shows the basic idea. A routing layer maps the shard key to the responsible shard. This can be done by range partitioning, hashing, or related strategies. The main design challenge is to balance efficient routing, even distribution of load, and manageable rebalancing as the cluster changes.
 
-\section{CAP style trade offs}
-In distributed systems, designers often discuss trade offs among consistency, availability, and partition tolerance. Even without going into every formal detail, the practical message is clear: distribution makes life more powerful and more complicated at the same time.
+\section{CAP and distributed-system trade-offs}
+The CAP theorem concerns three precise requirements. Consistency here means \emph{linearizability}: operations appear to act on one up-to-date copy, in an order that respects real time. Availability requires every request received by a non-failing node eventually to complete with a valid response. Partition tolerance means considering executions in which communication between parts of the system is lost.
 
-The CAP intuition is this:
-\begin{itemize}
-\item \textbf{Consistency}: all clients observe data that is mutually coherent according to the chosen consistency model.
-\item \textbf{Availability}: requests receive responses rather than simply failing when the system is under stress.
-\item \textbf{Partition tolerance}: the system continues operating even when communication between some nodes is broken.
-\end{itemize}
+In an asynchronous system that must tolerate such partitions, linearizability and this availability guarantee cannot both be assured for every execution. During a partition, an implementation may delay or reject some operations to preserve consistency, or accept operations without that consistency guarantee. CAP consistency differs from the C in ACID, which concerns integrity rules. See Gilbert and Lynch's \href{https://doi.org/10.1145/564585.564601}{2002 paper on Brewer's conjecture}.
 
-The key practical point is that under network partition, difficult design decisions must be made. Distribution therefore creates trade-offs that do not arise in the same way on a single machine.
-
-A related acronym is \textbf{BASE}: Basically Available, Soft state, Eventually consistent. This vocabulary is often used to describe systems that relax strong immediate consistency in exchange for scalability and availability.
+\textbf{BASE} abbreviates Basically Available, Soft state, Eventually consistent. It describes a broad design approach, not a universal property of NoSQL databases. The data model alone does not determine a system's transaction or consistency guarantees.
 
 \section{Database paradigms}
 Not all useful databases are relational. Key value stores, document stores, column family stores, graph databases, and time series systems all serve different needs. The rise of NoSQL did not kill SQL. It widened the ecosystem.
@@ -4016,7 +4067,7 @@ Each of these paradigms supports a different style of workload:
 \item wide sparse data at scale.
 \end{itemize}
 
-This is why “best database” is usually the wrong question. The better question is which model matches the data and access pattern best.
+This is why ``best database'' is usually the wrong question. The better question is which model matches the data and access pattern best.
 
 \section{Polyglot persistence}
 \begin{definition}{Polyglot persistence}{polyglot}
@@ -4100,7 +4151,7 @@ M. T. \"Ozsu and P. Valduriez.
 \section{Wrap-up}
 This chapter expanded the view from the single operational database to a larger data ecosystem. It connected warehousing, ETL, marts, distributed architectures, replication, sharding, and multiple data paradigms into one broader picture of modern data management. The next chapter continues that expansion into the world of big data, Hadoop, and MapReduce.
 
-\chapter{Big Data, Hadoop, and MapReduce (not covered in the lecture)}
+\chapter[Big Data, Hadoop, and MapReduce]{Big Data, Hadoop, and MapReduce}
 \label{ch:bigdata}
 \begin{guidancebox}
 This chapter introduces big data processing in distributed environments. It explains why traditional single system approaches may fail at scale, how Hadoop and HDFS organize storage, how the MapReduce model works, and why joins become difficult in distributed batch computation.
@@ -4372,7 +4423,7 @@ The reason the shuffle is expensive is now clear. Intermediate results from many
 \section{Partitioner, combiner, and sorting}
 A partitioner decides which reducer receives a key. A combiner can perform local pre aggregation when valid. Sorting is typically part of bringing equal keys together. These support efficiency, but they also impose constraints on algorithm design.
 
-A good rule of thumb is that a combiner is useful when the reduce operation is associative and commutative, such as sum or count. In those cases, performing local partial aggregation before the shuffle can significantly reduce intermediate traffic. But a combiner is an optimization, not a semantic requirement. A correct algorithm must still produce the right result even if the system chooses not to run the combiner.
+A combiner must preserve the final result when applied zero, one, or multiple times. Summing partial sums is a suitable associative and commutative operation. For counting, emit ones and sum the partial counts; counting the number of partial results is incorrect. For an average, carry a sum and a count, rather than averaging averages without their weights. In those cases, performing local partial aggregation before the shuffle can significantly reduce intermediate traffic. But a combiner is an optimization, not a semantic requirement. A correct algorithm must still produce the right result even if the system chooses not to run the combiner.
 
 The partitioner is equally important. It determines load distribution across reducers. A poor partitioning strategy can create severe skew, where one reducer receives far more data than the others. Then the whole job may be limited by one overloaded reducer.
 
@@ -4557,20 +4608,12 @@ SQL & Structured Query Language.\\
 \bottomrule
 \end{longtable}
 
-\chapter{How this manuscript can be published online}
-A WordPress version of this book can mirror the lecture order exactly. A useful pattern is to create one page per chapter. Each chapter page can contain a short introduction, the chapter text as HTML, and a small resource panel with links to the slide PDF, the slide LaTeX source, the chapter PDF, and the Git repository for version tracking.
+\chapter{Using and contributing to the living book}
+The book source, lecture slide sources, example SQL, change history, and build instructions are maintained together in the \href{https://github.com/emmerichmtm/DatabasesAndDataManagement}{GitHub repository}. Open an issue for a suspected error, giving the chapter, section, edition date, and a small example when helpful. Propose textual or technical improvements in a pull request.
 
-A landing page can include the current release date, a complete PDF of the book, citation information, and version links to earlier releases. This is close in spirit to modern online technical books that publish chapter drafts openly and improve them through feedback.
+The repository README describes how to compile the reader locally and how to import the source ZIP into Overleaf. The ZIP contains editable LaTeX and needs no external images. The PDF is generated from that source. A successful build checks typesetting, not the correctness of every explanation; substantive changes still need editorial review.
 
-Recommended Git structure:
-\begin{itemize}
-\item one repository for the full book source
-\item one repository for slide sources, or a clear subdirectory structure inside a single repository
-\item release tags for dated public versions
-\item issue tracking for typos, improvements, and content requests
-\end{itemize}
-
-This chapter is only a brief note for later publication work. The main task of the present step was to create a self contained full text LaTeX manuscript from the lecture material.
+TIM remains the home of the ISE-AI course syllabus, exercises, and teaching arrangements. This book can evolve beyond the assigned reading. Use dated editions or Git revisions when referring to specific passages in teaching or reporting an error.
 
 \printindex
 

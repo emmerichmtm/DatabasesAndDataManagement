@@ -1,0 +1,6 @@
+{
+  "name": "ise-ai-databases-reader-checks",
+  "private": true,
+  "scripts": {"test": "node examples/check-examples.mjs"},
+  "devDependencies": {"@electric-sql/pglite": "0.3.14"}
+}

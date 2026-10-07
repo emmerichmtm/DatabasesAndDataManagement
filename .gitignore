@@ -1,0 +1,14 @@
+/build/
+/node_modules/
+*.aux
+*.log
+*.toc
+*.out
+*.idx
+*.ind
+*.ilg
+*.fls
+*.fdb_latexmk
+*.xdv
+*.synctex.gz
+__pycache__/

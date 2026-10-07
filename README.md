@@ -1,98 +1,115 @@
 # Introduction to Databases and Data Management
 
-This repository contains the course slides and the reader-style book manuscript for the databases course.
+A living book by **Michael T. M. Emmerich**, Faculty of Information Technology,
+University of Jyväskylä. This reader accompanies the **ISE-AI** bachelor programme
+in Software Engineering and AI. **PostgreSQL** is used for SQL examples and practice.
 
-The material is organized so that the full reader can be maintained alongside the individual lecture slide sources.
+The book has a broader scope and a different chapter sequence from the course.
+The [TIM course home](https://tim.jyu.fi/view/kurssit/it/iseai/26-27/databases/home)
+defines assigned reading, teaching order, exercises, assessment, and arrangements.
+The nine chapters are supporting reading; inclusion does not imply required content.
 
-## Main book file
+## Read or edit the book
 
-The full reader is:
+- [Download the PDF snapshot](dist/ISEAI-Databases-Reader.pdf)
+- [Download the Overleaf source ZIP](dist/ISEAI-Databases-Overleaf.zip)
+- [Book source](Databases-ReaderBookFormat.tex)
+- [Changes and validation notes](CHANGELOG.md)
 
-- `Databases-ReaderBookFormat.tex`
+Current working edition: **7 October 2026**. Cite the date and repository commit or
+release tag when referring to a specific version. This is an evolving teaching text.
 
-This is the main LaTeX source for the book version of the course material.
+## Contents
 
-## Lecture slide sources
+1. Introduction to databases and data management
+2. Conceptual modeling with ER diagrams
+3. Relational model and transformation from ER
+4. SQL queries
+5. Database programming: DDL, DML, access control, and transactions
+6. Relational algebra
+7. Schema refinement and normal forms
+8. Data warehousing, distribution, and database paradigms
+9. Big data, Hadoop, and MapReduce (additional reading)
 
-The lecture slides are maintained as separate LaTeX files:
+The `Databases-lecture*.tex` files are the separately maintained lecture slide
+sources from which the reader developed. This edition's technical review applies
+to the reader and its examples. Check slide content before teaching from it;
+the source slide files have not yet received the same corrections.
 
-- `Databases-lecture1-Introduction.tex`
-- `Databases-lecture2-ConceptualER.tex`
-- `Databases-lecture3-LogicalDesign.tex`
-- `Databases-lecture4_sqlQueries.tex`
-- `Databases-lecture5-sqlDDLandTransactions.tex`
-- `Databases-lecture6-RelationalAlgebra.tex`
-- `Databases-lecture7-NormalForms.tex`
-- `Databases-lecture8-DataManagement.tex`
-- `Databases-lecture9-MapReduceHadoop.tex`
+## Open in Overleaf
 
-## Repository idea
+1. Download `dist/ISEAI-Databases-Overleaf.zip` as a file.
+2. In Overleaf, choose **New Project > Upload Project** and upload the ZIP.
+3. Set **Main document** to `main.tex` and **Compiler** to **XeLaTeX**.
+4. Recompile. The table of contents, links, and index are generated automatically.
 
-The purpose of this repository is to keep two closely related forms of the course material together:
+The ZIP is self-contained: all illustrations are drawn in LaTeX/TikZ. Node.js and
+Python are not needed on Overleaf. The ZIP can also be edited and built locally.
 
-- the **reader / book** in a continuous chapter-based format
-- the **lecture slides** in individual teaching units
+## Build locally
 
-This makes it easier to:
-- update the slides without losing the connection to the book
-- enrich the book using examples, figures, and jokes from the slides
-- track improvements over time with Git
-- keep course teaching material and reader development synchronized
+With a current TeX Live or MiKTeX installation including `latexmk` and XeLaTeX:
 
-## Suggested workflow
+```sh
+latexmk -xelatex -interaction=nonstopmode -halt-on-error -outdir=build main.tex
+```
 
-A practical workflow is:
+This produces `build/main.pdf`, including the index. The main wrapper loads
+`Databases-ReaderBookFormat.tex`, which is also directly compilable.
 
-1. Update the relevant lecture slide source.
-2. Transfer important changes to the corresponding chapter in `Databases-ReaderBookFormat.tex`.
-3. Commit both changes together when they belong to the same topic.
-4. Use Git history to track how the slides and the reader evolve in parallel.
+Alternatively, install [Tectonic](https://tectonic-typesetting.github.io/) and
+MakeIndex, then use Python 3:
 
-## Chapter and lecture correspondence
+```sh
+python scripts/build.py
+python scripts/package-overleaf.py
+```
 
-A natural correspondence is:
+The build script runs Tectonic, MakeIndex, and Tectonic again in `build/`, then
+copies the PDF to `dist/`. This route was validated with Tectonic 0.17.0.
+Use `--tectonic /path/to/tectonic` if it is not on PATH.
+The packaging script creates the source ZIP in `dist/` without build products or
+dependencies. Regenerate both downloads after changes, and inspect the PDF.
 
-- Lecture 1 → Introduction
-- Lecture 2 → Conceptual modeling and ER diagrams
-- Lecture 3 → Relational model and logical design
-- Lecture 4 → SQL querying
-- Lecture 5 → SQL DDL, transactions, and access control
-- Lecture 6 → Relational algebra
-- Lecture 7 → Normal forms and schema refinement
-- Lecture 8 → Data warehousing, distribution, and database paradigms
-- Lecture 9 → Big data, Hadoop, and MapReduce
+## PostgreSQL examples
 
-## Building the material
+Use an empty practice database. Run the schema once, then load the fictional data:
 
-You can compile the files in Overleaf or with a local LaTeX installation.
+```sh
+psql -v ON_ERROR_STOP=1 -d reader_practice -f examples/01-schema.sql
+psql -v ON_ERROR_STOP=1 -d reader_practice -f examples/02-data.sql
+```
 
-Typical use:
-- compile `Databases-ReaderBookFormat.tex` for the full reader
-- compile any `Databases-lectureX-...tex` file for the corresponding lecture slides
+These files contain the chapter 4/5 running schema and data. The prose includes
+independent examples and syntax templates; it is not a script to execute from top
+to bottom. In particular, privilege examples require existing roles, suitable
+schema/database access, and an authorized grantor. The guarded transfer requires
+application checks on the number of updated rows.
 
-## Versioning note
+For contributor checks using Node.js and pnpm:
 
-The repository is intended to support long-term maintenance of both:
-- the evolving course slides
-- the evolving reader / book manuscript
+```sh
+pnpm install --frozen-lockfile
+pnpm test
+```
 
-This makes Git especially useful for:
-- chapter-by-chapter refinement
-- correction of definitions and examples
-- integration of figures from slide sources
-- release snapshots for teaching periods
+The tests use PGlite, a WebAssembly build of PostgreSQL, to execute reader queries
+and check constraint and transaction behavior. They do not simulate concurrent
+connections or deployment-specific permissions. No running server is required.
+
+## Contributing and versioning
+
+Use GitHub issues for errors and suggestions, and pull requests for edits. See
+[CONTRIBUTING.md](CONTRIBUTING.md). Keep source and example corrections together,
+record substantive changes in the change log, and regenerate the downloadable
+snapshot. Use Git history or dated release tags to refer to past editions.
 
 ## Copyright and license
 
-Copyright © Michael Emmerich.
+Copyright © Michael Emmerich. The material is shared under
+[Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
+Please credit the author and identify adaptations when reusing it.
 
-This material is made available under the Creative Commons Attribution 4.0 International license (CC BY 4.0).
+Michael T. M. Emmerich · Faculty of Information Technology · University of Jyväskylä
 
-Please provide appropriate credit when reusing, adapting, or sharing this material.
-
-## Author and affiliation
-
-**Michael Emmerich**  
-Faculty of Information Technology  
-University of Jyväskylä  
 michael.t.m.emmerich@jyu.fi
