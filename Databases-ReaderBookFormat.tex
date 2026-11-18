@@ -221,7 +221,7 @@
 \vfill
 {\large Living book -- working edition\par}
 \vspace{0.3cm}
-{\large 7 October 2026\par}
+{\large 18 November 2026\par}
 \end{titlepage}
 
 \chapter*{Preface}
@@ -239,7 +239,7 @@ Read actively: sketch the models, predict query results, and run the SQL in a pr
 The authoritative editable source is maintained on \href{https://github.com/emmerichmtm/DatabasesAndDataManagement}{GitHub}. This PDF is a dated snapshot, not a frozen textbook. Corrections and suggestions can be submitted as issues or pull requests. Cite the edition date and, when available, the Git commit or release tag so that others can locate the version you used.
 
 \section*{Publication information}
-Author: Michael T. M. Emmerich. Faculty of Information Technology, University of Jyväskylä. Working edition: 7 October 2026. This revision builds on repository commit \texttt{dab7a0d}.
+Author: Michael T. M. Emmerich. Faculty of Information Technology, University of Jyväskylä. Working edition: 18 November 2026. This revision builds on repository commit \texttt{dab7a0d}.
 
 Copyright \textcopyright\ Michael Emmerich. Shared under the \href{https://creativecommons.org/licenses/by/4.0/}{Creative Commons Attribution 4.0 International license (CC BY 4.0)}. Credit the author and identify changes when adapting the material.
 
@@ -1005,7 +1005,7 @@ A relation can be described a little more formally as a pair \(\langle H,r\rangl
 This formal view explains why a relation is more than a rectangle on a screen. The header tells us what each position means. The body tells us which facts are currently stored. In later chapters, this separation becomes important when we distinguish between a schema and a current database state.
 
 \section{Example relation}
-Consider a relation \texttt{SUPPLIER(SupplierID, Name, City, FoundedYear)}. Each tuple represents one supplier. The attribute names describe the meaning of the components. A relation instance is the current set of tuples stored at some time.
+Consider a relation \texttt{SUPPLIER(SupplierID, Name, City, FoundedYear)}. Each tuple represents one supplier. The attribute names describe the meaning of the components. A relation instance is the current set of tuples stored at some time. The supplier names and records in this example are fictional; the city names are real Finnish cities.
 
 \begin{figure}[tbp]
 \centering
@@ -1013,11 +1013,11 @@ Consider a relation \texttt{SUPPLIER(SupplierID, Name, City, FoundedYear)}. Each
 \toprule
 \textbf{SupplierID} & \textbf{Name} & \textbf{City} & \textbf{FoundedYear}\\
 \midrule
-31 & Worchware & Kaeli & 2003\\
-42 & Fycbow & Shimo-carnia & 1993\\
-33 & Myjice & Yarghe-pfuhar & 2008\\
-54 & Bivoke & Lucan & 1986\\
-25 & Vakoj & Idgipurn & 2000\\
+31 & Panderi & Helsinki & 2003\\
+42 & Nokiva & Espoo & 1993\\
+33 & Koneva & Tampere & 2008\\
+54 & CMarket & Vantaa & 1986\\
+25 & Nesteva & Oulu & 2000\\
 \bottomrule
 \end{tabular}
 \caption{An example relation shown in table form. The relational model is often visualized this way, although it carries stricter semantics than an ordinary spreadsheet.}

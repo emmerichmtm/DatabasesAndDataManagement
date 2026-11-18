@@ -16,7 +16,7 @@ The nine chapters are supporting reading; inclusion does not imply required cont
 - [Book source](Databases-ReaderBookFormat.tex)
 - [Changes and validation notes](CHANGELOG.md)
 
-Current working edition: **7 October 2026**. Cite the date and repository commit or
+Current working edition: **18 November 2026**. Cite the date and repository commit or
 release tag when referring to a specific version. This is an evolving teaching text.
 
 ## Contents
