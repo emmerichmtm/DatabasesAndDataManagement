@@ -1,5 +1,13 @@
 # Change log
 
+## 2026-11-18 — Supplier example aligned with TIM Day 3
+
+- Use Panderi, Nokiva, Koneva, CMarket and Nesteva in Helsinki, Espoo,
+  Tampere, Vantaa and Oulu in both the reader and Lecture 3 slide source.
+- Retain the supplier IDs, founding years and relational-model explanation;
+  state that the supplier records are fictional.
+- Rebuild the downloadable reader PDF and editable Overleaf ZIP.
+
 ## 2026-10-07 — SQL injection cartoon
 
 - Add the supplied car-and-speed-camera cartoon at the end of Chapter 5,
