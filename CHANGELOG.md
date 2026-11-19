@@ -1,5 +1,11 @@
 # Change log
 
+## 2026-11-19 — Trace one delivery through four example rows
+
+- Show Panderi, Bolt, Footbridge and their delivery below Figure 3.2, with a shared LaTeX table source used in the reader and Lecture 3 slides.
+- Explain the three matching identifiers, the quantity and the smaller SUPPLIER schema; use supplier 31 consistently in the earlier tuple and NULL examples.
+- Retain the diagram, primary/foreign-key semantics and fictional Finnish supplier data. Rebuild the reader and Overleaf archive.
+
 ## 2026-11-19 — Clearer supplier–part–project schema
 
 - Use a shared TikZ diagram in the reader, Lecture 3 and the TIM export: one box per table, underlined primary keys and three labelled foreign-key arrows.

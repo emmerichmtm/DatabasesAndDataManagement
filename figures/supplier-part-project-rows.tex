@@ -1,0 +1,46 @@
+% Shared example instance: also shown below Figure 3.2 in TIM Day 3.
+\begingroup
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{minipage}[t]{0.48\linewidth}
+\centering\small\textbf{SUPPLIER}\par\smallskip
+{\footnotesize\begin{tabular}{@{}lll@{}}
+\toprule
+\underline{\texttt{supplier\_no}} & \texttt{name} & \texttt{city}\\
+\midrule
+31 & Panderi & Helsinki\\
+\bottomrule
+\end{tabular}}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\centering\small\textbf{PART}\par\smallskip
+{\footnotesize\begin{tabular}{@{}ll@{}}
+\toprule
+\underline{\texttt{part\_no}} & \texttt{name}\\
+\midrule
+2 & Bolt\\
+\bottomrule
+\end{tabular}}
+\end{minipage}
+\par\medskip
+\begin{minipage}[t]{0.48\linewidth}
+\centering\small\textbf{PROJECT}\par\smallskip
+{\footnotesize\begin{tabular}{@{}lll@{}}
+\toprule
+\underline{\texttt{project\_no}} & \texttt{name} & \texttt{budget}\\
+\midrule
+p123 & Footbridge & 8000\\
+\bottomrule
+\end{tabular}}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\centering\small\textbf{DELIVERY}\par\smallskip
+{\footnotesize\begin{tabular}{@{}llll@{}}
+\toprule
+\underline{\texttt{supplier\_no}} & \underline{\texttt{part\_no}} & \underline{\texttt{project\_no}} & \texttt{quantity}\\
+\midrule
+31 & 2 & p123 & 17\\
+\bottomrule
+\end{tabular}}
+\end{minipage}
+\endgroup
