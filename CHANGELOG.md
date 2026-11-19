@@ -1,5 +1,11 @@
 # Change log
 
+## 2026-11-19 — Clearer supplier–part–project schema
+
+- Use a shared TikZ diagram in the reader, Lecture 3 and the TIM export: one box per table, underlined primary keys and three labelled foreign-key arrows.
+- Make DELIVERY's single composite primary key explicit; retain all attributes and key constraints.
+- Give the diagram its own lecture slide and include its editable source in the Overleaf archive.
+
 ## 2026-11-19 — Supplier name correction
 
 - Rename the fictional supplier Nokiva to Noki in the reader and Lecture 3.
