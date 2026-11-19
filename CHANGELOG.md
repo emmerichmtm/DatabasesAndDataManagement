@@ -1,5 +1,10 @@
 # Change log
 
+## 2026-11-19 — Supplier name correction
+
+- Rename the fictional supplier Nokiva to Noki in the reader and Lecture 3.
+- Retain supplier ID 42, Espoo and founding year 1993; rebuild the reader and Overleaf archive.
+
 ## 2026-11-18 — Supplier example aligned with TIM Day 3
 
 - Use Panderi, Nokiva, Koneva, CMarket and Nesteva in Helsinki, Espoo,
