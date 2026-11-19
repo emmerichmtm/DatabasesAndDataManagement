@@ -1121,19 +1121,8 @@ A foreign key does not need to be unique. Many tuples may refer to the same targ
 
 \begin{figure}[tbp]
 \centering
-\begin{tabular}{@{}l@{}}
-\toprule
-\texttt{SUPPLIER}(\underline{supplier\_no}, name, city)\\
-\texttt{PART}(\underline{part\_no}, name)\\
-\texttt{PROJECT}(\underline{project\_no}, name, budget)\\
-\texttt{DELIVERY}(\underline{supplier\_no},\underline{part\_no},\underline{project\_no}, quantity)\\
-\midrule
-\texttt{DELIVERY.supplier\_no} \(\rightarrow\) \texttt{SUPPLIER.supplier\_no}\\
-\texttt{DELIVERY.part\_no} \(\rightarrow\) \texttt{PART.part\_no}\\
-\texttt{DELIVERY.project\_no} \(\rightarrow\) \texttt{PROJECT.project\_no}\\
-\bottomrule
-\end{tabular}
-\caption{An example schema with primary keys and foreign keys. The relation DELIVERY refers to SUPPLIER, PART, and PROJECT.}
+\input{figures/supplier-part-project.tex}
+\caption{Each box represents one table. Underlined attributes form its primary key. \texttt{DELIVERY} has one composite primary key and three separate foreign keys; each arrow points to the matching key in SUPPLIER, PART or PROJECT.}
 \label{fig:rel-delivery-schema}
 \end{figure}
 

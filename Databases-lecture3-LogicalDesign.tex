@@ -301,21 +301,12 @@ Consider a student registry relation:
   \end{itemize}
 \end{itemize}
 
-\vspace{2mm}
+\end{frame}
+
+\begin{frame}{Example: three foreign keys and one composite primary key}
 \centering
-\footnotesize Example (illustrative style):
-\begin{tabular}{@{}l@{}}
-\toprule
-\texttt{SUPPLIER}(\keyattr{supplier\_no}, name, city)\\
-\texttt{PART}(\keyattr{part\_no}, name)\\
-\texttt{PROJECT}(\keyattr{project\_no}, name, budget)\\
-\texttt{DELIVERY}(\keyattr{supplier\_no},\keyattr{part\_no},\keyattr{project\_no}, quantity)\\
-\midrule
-\texttt{DELIVERY.supplier\_no} $\rightarrow$ \texttt{SUPPLIER.supplier\_no}\\
-\texttt{DELIVERY.part\_no} $\rightarrow$ \texttt{PART.part\_no}\\
-\texttt{DELIVERY.project\_no} $\rightarrow$ \texttt{PROJECT.project\_no}\\
-\bottomrule
-\end{tabular}
+\resizebox{!}{0.85\textheight}{\input{figures/supplier-part-project.tex}}
+
 \end{frame}
 
 
