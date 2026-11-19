@@ -129,9 +129,9 @@
   \item Header is the attribute set
   $\{\texttt{supplier\_no},\texttt{part\_no},\texttt{project\_no},\texttt{quantity}\}$.
   \item If the table has 5 rows, then the \textbf{cardinality of the relation} is 5.
-  \item Example tuple (omitting attribute names):
+  \item Example tuple for Panderi, supplier 31 (omitting attribute names):
   \[
-    (1,\;2,\;\texttt{p123},\;17)
+    (31,\;2,\;\texttt{p123},\;17)
   \]
   \item If the values in \texttt{quantity} are \{17, 23, 9, 4, 12\}, then the \textbf{attribute cardinality} of \texttt{quantity} is 5.
 \end{itemize}
@@ -153,7 +153,7 @@
 
   \item Contrast with two tuples:
   \[
-    (1,\;2,\;\texttt{p123},\;\texttt{NULL}) \quad\text{vs.}\quad (1,\;2,\;\texttt{p123},\;0)
+    (31,\;2,\;\texttt{p123},\;\texttt{NULL}) \quad\text{vs.}\quad (31,\;2,\;\texttt{p123},\;0)
   \]
   \item Consequence: treating \texttt{NULL} as 0 changes meaning and can corrupt results
         (e.g., sums, averages, and comparisons).
@@ -308,6 +308,22 @@ Consider a student registry relation:
 \resizebox{!}{0.85\textheight}{\input{figures/supplier-part-project.tex}}
 
 \end{frame}
+
+\begin{frame}{Follow Panderi's delivery through the tables}
+\input{figures/supplier-part-project-rows.tex}
+\medskip
+\small
+Start with \texttt{(31, 2, 'p123', 17)} in DELIVERY. The value 31 identifies
+Panderi in Helsinki; 2 identifies Bolt; and \texttt{p123} identifies
+Footbridge, whose budget is 8000. Panderi supplies 17 units of Bolt to Footbridge.
+The quantity 17 describes this combination; it is not a foreign key.
+
+\medskip
+\footnotesize
+The matching identifiers connect the rows. SQL quotes are not stored as part
+of \texttt{p123}. All example records are fictional.
+\end{frame}
+
 
 
 

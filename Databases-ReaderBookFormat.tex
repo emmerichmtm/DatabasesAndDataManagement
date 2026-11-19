@@ -1040,9 +1040,9 @@ A useful running example is
 \]
 Here the schema has four attributes, so the degree of the relation is \(4\). A tuple such as
 \[
-(1,\;2,\;\texttt{p123},\;17)
+(31,\;2,\;\texttt{p123},\;17)
 \]
-states that supplier 1 delivers part 2 to project \texttt{p123} in quantity 17.
+states that supplier 31, Panderi, supplies 17 units of part 2 to project \texttt{p123}.
 
 This example is useful because it already hints at keys and references. The attributes \texttt{supplier\_no}, \texttt{part\_no}, and \texttt{project\_no} will naturally connect to other relations such as \texttt{SUPPLIER}, \texttt{PART}, and \texttt{PROJECT}. The attribute \texttt{quantity} is different. It is not an identifier but a descriptive fact about one delivery.
 
@@ -1053,11 +1053,11 @@ It is important not to confuse \texttt{NULL} with the value \(0\). If the quanti
 
 For example,
 \[
-(1,\;2,\;\texttt{p123},\;\texttt{NULL})
+(31,\;2,\;\texttt{p123},\;\texttt{NULL})
 \qquad\text{and}\qquad
-(1,\;2,\;\texttt{p123},\;0)
+(31,\;2,\;\texttt{p123},\;0)
 \]
-are not equivalent. The first says that the quantity is not known from the stored data. The second says that the quantity is known and equals zero.
+are not equivalent. The first says that the quantity is not known from the stored data. The second says that the quantity is known and equals zero. Whether either row is allowed depends on the table constraints; this comparison explains their meanings, not their validity in a particular schema.
 
 \section{Core properties of relations}
 In the pure relational model, a relation is a set. This means duplicate tuples are not conceptually allowed. The order of rows and columns is not part of the meaning. Real SQL systems sometimes relax these ideas in practical ways, but the clean mathematical picture is still important.
@@ -1122,9 +1122,31 @@ A foreign key does not need to be unique. Many tuples may refer to the same targ
 \begin{figure}[tbp]
 \centering
 \input{figures/supplier-part-project.tex}
-\caption{Each box represents one table. Underlined attributes form its primary key. \texttt{DELIVERY} has one composite primary key and three separate foreign keys; each arrow points to the matching key in SUPPLIER, PART or PROJECT.}
+\par\medskip
+\textbf{One example row in each table}\par\smallskip
+\input{figures/supplier-part-project-rows.tex}
+\par\medskip
+\begin{minipage}{\linewidth}
+\small
+Start with the DELIVERY row \texttt{(31, 2, 'p123', 17)}. Its value 31 matches
+\texttt{SUPPLIER.supplier\_no}, identifying Panderi in Helsinki. Its value 2
+matches \texttt{PART.part\_no}, identifying Bolt. Its value \texttt{p123}
+matches \texttt{PROJECT.project\_no}, identifying Footbridge, whose budget is 8000.
+The row therefore says that Panderi supplies 17 units of Bolt to Footbridge.
+The quantity 17 describes this combination; it is not a foreign key.
+\end{minipage}
+\caption{The supplier--part--project schema and one example row in each table.
+Primary-key attributes are underlined. DELIVERY has one composite primary key
+and three separate foreign keys, shown by the three arrows. The connections
+are matching data values, not memory pointers.}
 \label{fig:rel-delivery-schema}
 \end{figure}
+
+The example rows in \Cref{fig:rel-delivery-schema} are fictional. This smaller
+SUPPLIER schema calls the earlier \texttt{SupplierID} attribute
+\texttt{supplier\_no} and omits \texttt{FoundedYear}; supplier 31 is still
+Panderi in Helsinki. The stored project code is \texttt{p123}. Single quotes
+in SQL delimit a text value and are not part of that stored code.
 
 \Cref{fig:rel-delivery-schema} shows a common pattern. The relation \texttt{DELIVERY} represents an association among three other relations. Its key is composite, and each part of that key also acts as a foreign key. This kind of structure appears frequently when many-to-many or higher-arity associations are translated into the relational model.
 
